@@ -71,4 +71,15 @@
 - [google cloud platform](https://cloud.google.com/speech-to-text?hl=ja)
 - 電光掲示板の制御(ハードウェア&ソフトウェア) 
 
+### 来週までに調べること
+
+- 井上, 犬飼
+    - slack APIとutasの情報取得をする。
+- 楠井
+    - speech to textについて調べる。
+- 片山
+    - 電光掲示板について(どれを買うか)。
+- 杉江
+    - 天気予報を取得するAPI。
+
 
