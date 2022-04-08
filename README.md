@@ -11,7 +11,7 @@
 ## リポジトリ構成
 
 ## 過去の4年実験
-- 2021: 数理工学の泉（https://github.com/OptMist-Tokyo/experiment2021）
+- 2021: 数理工学の泉 (https://github.com/OptMist-Tokyo/experiment2021)
 - 2020: 退屈な座席決めはPythonにやらせよう (https://github.com/OptMist-Tokyo/experiment2020)
 - 2019: MEIPY でさくさく入ろう控室 (https://github.com/OptMist-Tokyo/experiment2019)
 - 2018: ざんねーん　これは回文ではありません (https://github.com/OptMist-Tokyo/experiment2018)
