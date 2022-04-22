@@ -35,9 +35,9 @@ def speech_call():
     # TODO:displayで電光掲示板に表示する
     if ret[:6] == "error:":
         logger.error(ret)
-        slack.message_send_test.send_message("認識に失敗しました")
+        slack.slackbot.send_message("認識に失敗しました")
     else:
-        slack.message_send_test.send_message(ret)
+        slack.slackbot.send_message(ret)
 
 def main():
     button_s2t = Button(BUTTON_S2T_PIN)
