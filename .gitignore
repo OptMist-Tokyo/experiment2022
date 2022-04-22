@@ -2,4 +2,5 @@
 *.jpg
 *.wav
 src/__pycache__
+src/slack/__pycache__
 venv/
