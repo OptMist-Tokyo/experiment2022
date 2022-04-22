@@ -4,6 +4,7 @@ from signal import pause
 
 import weather
 import slack
+import voc2txt
 
 BUTTON_S2T_PIN = 6
 BUTTON_WEATHER_PIN = 20
@@ -30,10 +31,13 @@ def weather_call():
 
 def speech_call():
     logger.info("speech!")
-    # TOOD:録音を開始する関数を呼ぶ
-    # TODO:voc2txtを使って認識結果を得る
+    ret = voc2txt.s2t.s2t()
     # TODO:displayで電光掲示板に表示する
-    # TODO:slackに通知する
+    if ret[:6] == "error:":
+        logger.error(ret)
+        slack.message_send_test.send_message("認識に失敗しました")
+    else:
+        slack.message_send_test.send_message(ret)
 
 def main():
     button_s2t = Button(BUTTON_S2T_PIN)
