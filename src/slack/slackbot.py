@@ -14,15 +14,13 @@ def send_message(message):
 
 
 def get_channel_id(channel_name):
-    conversation_id = None
     for result in client.conversations_list():
-        if conversation_id is not None:
-            break
         for channel in result["channels"]:
             if channel["name"] == channel_name:
                 conversation_id = channel["id"]
-                print(f"found: {conversation_id}")
+                #print(f"found: {conversation_id}")
                 return conversation_id
+    return None
 
 
 def get_channel_messages(channel_id, oldest="0"):
@@ -41,6 +39,9 @@ def get_channel_messages(channel_id, oldest="0"):
 if __name__ == "__main__":
     channel_name = input("channel name:")
     channel_id = get_channel_id(channel_name=channel_name)
+    if channel_id is None:
+        print("not found")
+        exit()
 
     # NOTE: conversation_historyの引数oldestにはstr型を与えることになっている。
     # 小数点以下の桁数をちょうど6桁にしないと、チャンネル内メッセージのtimestampとうまく比較できないっぽい
@@ -48,11 +49,14 @@ if __name__ == "__main__":
     while True:
         print("get message older than:", ts)
         con_hist = get_channel_messages(channel_id=channel_id, oldest=ts)
+        new_message_flg = False
         if len(con_hist) != 0:
-            print("new message!")
             for message in con_hist:
-                print("\ttext:{}, ts:{}".format(message["text"], message["ts"]))
-        else:
+                if "bot_id" not in message:
+                    print("\ttext:{}, ts:{}".format(message["text"], message["ts"]))
+                    new_message_flg = True
+        
+        if new_message_flg == False:
             print("no new message")
         ts = str(round(time.time(), 6))
         time.sleep(10)
