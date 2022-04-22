@@ -26,7 +26,7 @@ def weather_call():
     today_weather,tommorow_weather,tmperature = weather.weather()
     logger.info(f"本日の天気 : {today_weather},本日の気温: {tmperature}度,明日の天気: {tommorow_weather}")
     # TODO:displayで電光掲示板に表示する
-    slack.message_send_test.send_message(f"本日の天気 : {today_weather},本日の気温: {tmperature}度,明日の天気: {tommorow_weather}")
+    slack.slackbot.send_message(f"本日の天気 : {today_weather},本日の気温: {tmperature}度,明日の天気: {tommorow_weather}")
 
 def speech_call():
     logger.info("speech!")
