@@ -1,6 +1,5 @@
 .DS_Store
 *.jpg
 *.wav
-src/__pycache__
-src/slack/__pycache__
+**/__pycache__
 venv/

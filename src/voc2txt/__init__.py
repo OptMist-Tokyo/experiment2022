@@ -1,0 +1,1 @@
+from voc2txt import s2t
