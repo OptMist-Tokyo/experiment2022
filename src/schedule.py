@@ -17,13 +17,13 @@ def check_and_reg(msg):
     return True
 
 def add_schedule_to_csv(date, content):
-    with open("src/data/schedule.csv", 'a', newline='') as f:
+    with open("data/schedule.csv", 'a', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=["date", "content"])
         writer.writerow({"date":date, "content": content})
 
 def timer(start_time,end_time):
     ret = []
-    with open("src/data/schedule.csv", 'r', newline='') as f:
+    with open("data/schedule.csv", 'r', newline='') as f:
         reader = csv.DictReader(f)
         for row in reader:
             ti = datetime.datetime.strptime(row["date"],"%Y-%m-%d %H:%M")

@@ -3,4 +3,4 @@
 *.wav
 **/__pycache__
 venv/
-src/data/schedule.csv
+data/schedule.csv
