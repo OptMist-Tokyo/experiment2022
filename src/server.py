@@ -1,14 +1,16 @@
-import logging,time
+import logging,time,datetime
 from gpiozero import Button
-from signal import pause
 
 import weather
 import slack
 import voc2txt
 import display
+import schedule
 
 BUTTON_S2T_PIN = 6
 BUTTON_WEATHER_PIN = 20
+
+CHANNEL_NAME = "test"
 
 def init_logging():
     """init_logging
@@ -47,9 +49,50 @@ def main():
     button_weather = Button(BUTTON_WEATHER_PIN)
 
     logger.info("server started")
+
+    # ボタンを押した時のイベント
     button_s2t.when_pressed = speech_call
     button_weather.when_pressed = weather_call
-    pause()
+
+    channel_id = slack.slackbot.get_channel_id(channel_name=CHANNEL_NAME)
+    if channel_id is None:
+        logger.error(f"slack channel: {CHANNEL_NAME} not found.")
+        exit()
+    
+    # 10秒ごとにslackのメッセージを読む
+    # NOTE: conversation_historyの引数oldestにはstr型を与えることになっている。
+    # 小数点以下の桁数をちょうど6桁にしないと、チャンネル内メッセージのtimestampとうまく比較できないっぽい
+    ts = str(round(time.time(), 6))
+    dt = datetime.datetime.now()
+
+    while True:
+
+        # slackからmessageを取得
+        logger.info(f"get message older than: {ts}")
+        con_hist = slack.slackbot.get_channel_messages(channel_id=channel_id, oldest=ts)
+        new_message_flg = False
+        for message in con_hist:
+            if "bot_id" not in message:
+                logger.info(f"\ttext:{message['text']}, ts:{message['ts']}")
+                is_schedule = schedule.check_and_reg(message["text"])
+                if not is_schedule:
+                    display.display.createPPM([[message,[255,255,0]]])
+                new_message_flg = True
+        
+        if new_message_flg == False:
+            logger.info("no new message")
+        ts = str(round(time.time(), 6))
+
+        # schedule情報を取得
+        logger.info(f"get schedule info older than: {ts}")
+        dt_now = datetime.datetime.now()
+        sched_info = schedule.timer(dt,dt_now)
+        for sched in sched_info:
+            slack.slackbot.send_message(sched)
+            display.display.createPPM([[sched,[255,255,0]]])
+        dt = dt_now
+
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()
