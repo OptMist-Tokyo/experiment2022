@@ -28,10 +28,10 @@ logger = init_logging()
 def weather_call():
     logger.info("weather!")
     today_weather,tommorow_weather,tmperature = weather.weather()
-    message = f"本日の天気 : {today_weather},本日の気温: {tmperature}度,明日の天気: {tommorow_weather}"
+    message = f"本日の天気 : {today_weather.replace('　','')},本日の気温: {tmperature}度,明日の天気: {tommorow_weather.replace('　','')}"
     logger.info(message)
+    slack.slackbot.send_message(message)
     display.display.createPPM([[message,[255,255,0]]])
-    slack.slackbot.send_message(f"本日の天気 : {today_weather},本日の気温: {tmperature}度,明日の天気: {tommorow_weather}")
 
 def speech_call():
     logger.info("speech!")
