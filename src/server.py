@@ -33,6 +33,9 @@ def weather_call():
     slack.slackbot.send_message(message)
     display.display.createPPM('[天気] '+message,[255,255,0])
 
+
+SPEECH_COLOR = (128,0,255)
+
 def speech_call():
     logger.info("speech!")
 
@@ -40,7 +43,7 @@ def speech_call():
     ret = []
     t = threading.Thread(target=voc2txt.s2t.s2t,args=(ret,))
     t.start()
-    display.display.createPPM("音声認識を開始しました",[255,0,255])
+    display.display.createPPM("音声認識を開始しました",SPEECH_COLOR)
     t.join()
     ret = ret[0]
 
@@ -50,12 +53,12 @@ def speech_call():
         logger.error(ret)
         message = "[音声認識] 認識に失敗しました"
         slack.slackbot.send_message(message)
-        display.display.createPPM(message,[255,0,255])
+        display.display.createPPM(message,SPEECH_COLOR)
     else:
         print(ret)
         message = "[音声認識] "+ret
         slack.slackbot.send_message(message)
-        display.display.createPPM(message,[255,0,255])
+        display.display.createPPM(message,SPEECH_COLOR)
 
 def main():
     button_s2t = Button(BUTTON_S2T_PIN)
