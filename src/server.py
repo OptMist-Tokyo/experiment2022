@@ -34,7 +34,7 @@ def weather_call():
     display.display.createPPM('[天気] '+message,[255,255,0])
 
 
-SPEECH_COLOR = (128,0,255)
+SPEECH_COLOR = (255,0,255)
 
 def speech_call():
     logger.info("speech!")
