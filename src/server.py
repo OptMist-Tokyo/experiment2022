@@ -28,23 +28,34 @@ logger = init_logging()
 def weather_call():
     logger.info("weather!")
     today_weather,tommorow_weather,tmperature = weather.weather()
-    message = f"本日の天気 : {today_weather.replace('　','')},本日の気温: {tmperature}度,明日の天気: {tommorow_weather.replace('　','')}"
+    message = f"本日の天気 : {today_weather.replace('　',' ')},本日の気温: {tmperature}度,明日の天気: {tommorow_weather.replace('　','')}"
     logger.info(message)
     slack.slackbot.send_message(message)
     display.display.createPPM('[天気] '+message,[255,255,0])
 
 def speech_call():
     logger.info("speech!")
+
+    # 別スレッドで音声認識する
+    ret = []
+    t = threading.Thread(target=voc2txt.s2t.s2t,args=(ret,))
+    t.start()
     display.display.createPPM("音声認識を開始しました",[255,0,255])
-    ret = voc2txt.s2t.s2t()
+    t.join()
+    ret = ret[0]
+
+    # slackに送って電光掲示板にも表示
+    logger.info(ret)
     if ret[:6] == "error:":
         logger.error(ret)
         message = "[音声認識] 認識に失敗しました"
         slack.slackbot.send_message(message)
         display.display.createPPM(message,[255,0,255])
     else:
-        slack.slackbot.send_message(ret)
-        display.display.createPPM(ret,[255,0,255])
+        print(ret)
+        message = "[音声認識] "+ret
+        slack.slackbot.send_message(message)
+        display.display.createPPM(message,[255,0,255])
 
 def main():
     button_s2t = Button(BUTTON_S2T_PIN)
