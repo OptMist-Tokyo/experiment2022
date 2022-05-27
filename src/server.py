@@ -1,4 +1,4 @@
-import logging,time,datetime
+import logging,time,datetime,threading
 from gpiozero import Button
 
 import weather
@@ -31,18 +31,20 @@ def weather_call():
     message = f"本日の天気 : {today_weather.replace('　','')},本日の気温: {tmperature}度,明日の天気: {tommorow_weather.replace('　','')}"
     logger.info(message)
     slack.slackbot.send_message(message)
-    display.display.createPPM([[message,[255,255,0]]])
+    display.display.createPPM('[天気] '+message,[255,255,0])
 
 def speech_call():
     logger.info("speech!")
+    display.display.createPPM("音声認識を開始しました",[255,0,255])
     ret = voc2txt.s2t.s2t()
     if ret[:6] == "error:":
         logger.error(ret)
-        slack.slackbot.send_message("認識に失敗しました")
-        display.display.createPPM([["認識に失敗しました",[255,255,0]]])
+        message = "[音声認識] 認識に失敗しました"
+        slack.slackbot.send_message(message)
+        display.display.createPPM(message,[255,0,255])
     else:
         slack.slackbot.send_message(ret)
-        display.display.createPPM([[ret,[255,255,0]]])
+        display.display.createPPM(ret,[255,0,255])
 
 def main():
     button_s2t = Button(BUTTON_S2T_PIN)
@@ -76,7 +78,7 @@ def main():
                 logger.info(f"\ttext:{message['text']}, ts:{message['ts']}")
                 is_schedule = schedule.check_and_reg(message["text"])
                 if not is_schedule:
-                    display.display.createPPM([[message,[255,255,0]]])
+                    display.display.createPPM("[slack] "+message["text"],[255,255,255])
                 new_message_flg = True
         
         if new_message_flg == False:
@@ -89,7 +91,7 @@ def main():
         sched_info = schedule.timer(dt,dt_now)
         for sched in sched_info:
             slack.slackbot.send_message(sched)
-            display.display.createPPM([[sched,[255,255,0]]])
+            display.display.createPPM("[予定] "+sched,[0,255,255])
         dt = dt_now
 
         time.sleep(10)
